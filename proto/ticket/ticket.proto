@@ -1,0 +1,101 @@
+syntax = "proto3";
+package ticketingapp;
+
+option go_package = "proto-gen/ticket";
+
+
+service TrainTicketService {
+  rpc SubmitPurchase (PurchaseRequest) returns (Receipt);
+  rpc AllocateSeat (SeatAllocationRequest) returns (SeatAllocationResponse);
+  rpc GetReceiptDetails (ReceiptDetailsRequest) returns (Receipt);
+  rpc GetUsersBySection (SectionRequest) returns (UsersBySectionResponse);
+  rpc RemoveUser (RemoveUserRequest) returns (RemoveUserResponse);
+  rpc ModifySeat (ModifySeatRequest) returns (ModifySeatResponse);
+  rpc ApplyDiscount (DiscountRequest) returns (DiscountResponse);
+}
+
+message PurchaseRequest {
+  string from = 1;
+  string to = 2;
+  User user = 3;
+  float price_paid = 4;
+  string seat_no = 6;
+  string section = 7;
+  string discount_code = 8;
+}
+
+message Receipt {
+  string receipt_id = 1;
+  string from = 2;
+  string to = 3;
+  User user = 4;
+  float price_paid = 5;
+  string seat_no = 6;
+  string section = 7;
+}
+
+message User {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+}
+
+// Seat for the user
+message SeatAllocationRequest {
+  string user_id = 1;
+  string seat_no = 2;
+  string section = 3;
+}
+
+message SeatAllocationResponse {
+  string seat_number = 1;
+  string section = 2;
+}
+
+// Details for receipt of the user
+message ReceiptDetailsRequest {
+  string receipt_id = 1;
+}
+
+// View Users and Seats by section
+message SectionRequest {
+  string section = 1;
+}
+
+message UsersBySectionResponse {
+  repeated UserSeatMapping user_seat_mapping = 1;
+}
+
+message UserSeatMapping {
+  string user_id = 1;
+  string seat_number = 2;
+}
+
+// Remove
+message RemoveUserRequest {
+  string user_id = 1;
+}
+
+message RemoveUserResponse {
+  bool success = 1;
+}
+
+// Modify
+message ModifySeatRequest {
+  string user_id = 1;
+  string new_seat_number = 2;
+}
+
+message ModifySeatResponse {
+  bool success = 1;
+}
+
+message DiscountRequest {
+  string receipt_id = 1;
+  string discount_code = 2;
+}
+
+message DiscountResponse {
+  Receipt updated_receipt = 1;
+}
